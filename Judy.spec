@@ -1,6 +1,6 @@
 Name:       Judy
 Version:    1.0.5
-Release:    19
+Release:    20
 Summary:    C library array
 License:    LGPLv2+
 URL:        http://sourceforge.net/projects/judy/
@@ -28,7 +28,11 @@ The help for Judy to use.
 %autosetup -n judy-%{version} -p1
 
 %build
+%if "%toolchain" == "clang"
+export CFLAGS="$CFLAGS %{optflags} -fno-strict-aliasing"
+%else
 export CFLAGS="%{optflags} -fno-strict-aliasing -fno-tree-ccp -fno-tree-dominator-opts -fno-tree-copy-prop -fno-tree-vrp"
+%endif
 %configure --disable-static
 
 make
@@ -63,6 +67,9 @@ cd -
 %doc README examples AUTHORS ChangeLog
 
 %changelog
+* Wed Apr 26 2023 Xiaoya Huang <huangxiaoya@iscas.ac.cn> - 1.0.5-20
+- Fix clang build error
+
 * Wed Jan  8 2020 sunguoshuai <sunguoshuai@huawei.com> - 1.0.5-19
 - Delete unwanted files.
 
